@@ -13,7 +13,7 @@ function MyOrders() {
             if (data.success) {
                 setMyOrders(data.orders)
             } else {
-                toast.error('fuck off')
+                toast.error(data.error)
             }
         } catch (error) {
             console.log(error)
