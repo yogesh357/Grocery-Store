@@ -50,7 +50,7 @@ function NavBar() {
                 <li > <Link to='/products'>All Products </Link></li>
                 <li > <Link to='/contact'>Contact </Link></li>
                 {!user &&
-                    <div className='px-2.5 py-1 border border-green-800 bg-green-300 text-xl'>
+                    <div className='px-2.5 py-1 border border-green-800 bg-green-300 text-xl rounded-xl'>
                         <Link to={'/seller'}> <button>Join as seller</button></Link>
                     </div>
                 }
