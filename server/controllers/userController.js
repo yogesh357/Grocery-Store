@@ -1,9 +1,3 @@
-// These is user registeration controller (to register new user)
-//Register User : api/user/register
-// error :
-// Cannot destructure property 'userId' of 'req.body' as it is undefined.
-
-
 import User from "../models/user.js";
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
@@ -85,7 +79,7 @@ export const login = async (req, res) => {
 
 export const isAuth = async (req, res) => {
     try {
-        const { id: userId } = req.user; // 👈 now from req.user
+        const { id: userId } = req.user; 
         const user = await User.findById(userId).select("-password");
 
         if (!user) {

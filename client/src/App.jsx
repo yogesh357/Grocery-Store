@@ -51,7 +51,7 @@ function App() {
           </Route>
 
         </Routes>
-      </div>
+      </div> 
 
 
       {!isSellerPath &&

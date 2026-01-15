@@ -13,12 +13,7 @@ export const placeOrderCOD = async (req, res) => {
         if (!address || items.length === 0) {
             return res.json({ success: false, message: "Invalod data" })
         }
-        //Calculate Amount Using Items
-        // let amount = await items.reduce(async (acc, item) => { // acc is initial count
-        //     const product = await Product.findById(item.product);
-        //     return (await acc) + product.offerPrice + item.quantity;
-
-        // }, 0)
+       
 
         let amount = await items.reduce(async (accPromise, item) => {
             const acc = await accPromise; // Await the previous accumulator value
@@ -281,6 +276,3 @@ export const getAllOrders = async (req, res) => {
         res.json({ success: false, message: error.message })
     }
 }
-
-
-

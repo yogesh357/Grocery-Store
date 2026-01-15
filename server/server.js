@@ -26,7 +26,7 @@ await connectCloudinary();
 
 
 //These are URL's that are allowed to access our backend.
-const allowedOrigins = ['http://localhost:5173','https://grocery-store-khaki-nine.vercel.app']
+const allowedOrigins = ['http://localhost:5173', 'https://grocery-store-khaki-nine.vercel.app', 'http://localhost:5174']
 
 app.post('/stripe', express.raw({ type: 'application/json' }), stripeWebhooks)
 

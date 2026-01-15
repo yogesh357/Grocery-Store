@@ -19,3 +19,8 @@
 
 
 // Changes in placeOrderStripe()   usd changed to INR
+
+
+
+// ===================DEPLOYMENT===================
+// Deployed succesfull every route is working refresh error is gone but online payment is not veryfing
