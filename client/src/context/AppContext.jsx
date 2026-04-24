@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useEffect, useState } from 'react'
-import { useNavigate } from 'react-router-dom'; 
+import { useNavigate } from 'react-router-dom';
 import toast from 'react-hot-toast';
 import axios from 'axios';
 
@@ -132,7 +132,7 @@ export function AppContexProvidert({ children }) {
     useEffect(() => {
         const updateCart = async () => {
             try {
-                const { data } = await axios.post('/api/cart/update', {cartItems})
+                const { data } = await axios.post('/api/cart/update', { cartItems })
                 if (!data.success) {
                     toast.error(data.message)
                 }
@@ -149,7 +149,7 @@ export function AppContexProvidert({ children }) {
 
     const value = {
         navigate, user, setUser, isSeller, setIsSeller, showUserLogin, setShowUserLogin, products, currency,
-        addToCart, updateCartItem, removeFromCart, cartItems, searchQuery, setSearchQuery, getCartAmount, getCartCount, axios, fetchProducts ,
+        addToCart, updateCartItem, removeFromCart, cartItems, searchQuery, setSearchQuery, getCartAmount, getCartCount, axios, fetchProducts,
         setCartItems
     }
 

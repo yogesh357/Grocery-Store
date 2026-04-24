@@ -80,6 +80,7 @@ export const login = async (req, res) => {
 export const isAuth = async (req, res) => {
     try {
         const { id: userId } = req.user; 
+
         const user = await User.findById(userId).select("-password");
 
         if (!user) {

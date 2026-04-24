@@ -26,7 +26,7 @@ await connectCloudinary();
 
 
 //These are URL's that are allowed to access our backend.
-const allowedOrigins = ['http://localhost:5173', 'https://grocery-store-khaki-nine.vercel.app', 'http://localhost:5174']
+// const allowedOrigins = ['http://localhost:5173', 'https://grocery-store-khaki-nine.vercel.app', 'http://localhost:5174']
 
 app.post('/stripe', express.raw({ type: 'application/json' }), stripeWebhooks)
 
@@ -34,7 +34,8 @@ app.post('/stripe', express.raw({ type: 'application/json' }), stripeWebhooks)
 //Middlware  configuration
 app.use(express.json()) //all requests comming this server will be parsed
 app.use(cookieParser())
-app.use(cors({ origin: allowedOrigins, credentials: true }))
+// app.use(cors({ origin: allowedOrigins, credentials: true }))
+app.use(cors({ origin: 'http://localhost:5173', credentials: true }))
 
 
 
