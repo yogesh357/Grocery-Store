@@ -6,7 +6,7 @@ import { Link } from 'react-router-dom'
 function MainBanner() {
     return (
 
-        <div className=' relative'>
+        <div className=' relative z-0'>
 
             <img
                 className='w-full hidden md:block'
@@ -37,7 +37,7 @@ function MainBanner() {
             </div>
         </div>
     )
-    
+
 }
 
 export default MainBanner
