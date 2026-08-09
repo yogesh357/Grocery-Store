@@ -59,6 +59,25 @@ function Login() {
                         Create an account? <span onClick={() => setState("register")} className="text-blue-500 cursor-pointer">click here</span>
                     </p>
                 )}
+                {state === "login" && (
+                    <div className="w-full bg-green-50/50 border border-dashed border-green-200 rounded-md p-3 text-xs mt-1">
+                        <div className="flex justify-between items-center mb-1">
+                            <span className="font-semibold text-green-800">Demo Credentials:</span>
+                            <button
+                                type="button"
+                                onClick={() => {
+                                    setEmail("yogesh@gmail.com");
+                                    setPassword("12345");
+                                }}
+                                className="text-green-600 hover:text-green-700 font-medium underline cursor-pointer"
+                            >
+                                Auto Fill
+                            </button>
+                        </div>
+                        <p className="mt-1"><span className="font-medium text-gray-500">Email:</span> yogesh@gmail.com</p>
+                        <p><span className="font-medium text-gray-500">Password:</span> 12345</p>
+                    </div>
+                )}
                 <button className="bg-green-600 hover:bg-green-700 transition-all text-white w-full py-2 rounded-md cursor-pointer">
                     {state === "register" ? "Create Account" : "Login"}
                 </button>
