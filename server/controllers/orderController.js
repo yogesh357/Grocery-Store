@@ -8,12 +8,12 @@ import User from '../models/user.js'
 
 export const placeOrderCOD = async (req, res) => {
     try {
-        const { userId, items, address } = req.body;
-        // const { id: userId } = req.user; // we are change => userId = req.body to userId = req.user
+        const { items, address } = req.body;
+        const { id: userId } = req.user; // we are change => userId = req.body to userId = req.user
         if (!address || items.length === 0) {
             return res.json({ success: false, message: "Invalod data" })
         }
-       
+
 
         let amount = await items.reduce(async (accPromise, item) => {
             const acc = await accPromise; // Await the previous accumulator value

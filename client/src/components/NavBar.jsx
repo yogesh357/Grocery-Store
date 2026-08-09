@@ -49,11 +49,11 @@ function NavBar() {
                 <li > <Link to='/'>Home </Link></li>
                 <li > <Link to='/products'>All Products </Link></li>
                 <li > <Link to='/contact'>Contact </Link></li>
-                {!user &&
+                {/* {!user &&
                     <div className='px-2.5 py-1 border border-green-800 bg-green-300 text-xl rounded-xl'>
                         <Link to={'/seller'}> <button>Join as seller</button></Link>
                     </div>
-                }
+                } */}
                 <div className="hidden lg:flex items-center text-sm gap-2 border border-gray-300 px-3 rounded-full">
                     <input
                         onChange={((e) => setSearchQuery(e.target.value))}
