@@ -1,6 +1,8 @@
 
 import { v2 as cloudinary } from 'cloudinary';
 import Product from "../models/product.js";
+import { sendSubscriptionMail, generateNewProductEmailHTML } from '../mailer/subscriptionMail.js';
+import Subscriber from '../models/Subscribers.js';
 
 
 // Add Product : /api/product/add
@@ -19,7 +21,32 @@ export const addProduct = async (req, res) => {
             })
         )
 
-        await Product.create({ ...productData, image: imagesUrl })
+        const product = await Product.create({ ...productData, image: imagesUrl })
+
+        // Send newsletter notifications to all active subscribers
+        try {
+            const subscribers = await Subscriber.find({ active: true });
+            if (subscribers.length > 0) {
+                const backendUrl = req.protocol + '://' + req.get('host');
+                const frontendUrl = process.env.FRONTEND_URL || 'http://localhost:5173';
+                
+                for (const sub of subscribers) {
+                    try {
+                        const emailHtml = generateNewProductEmailHTML(backendUrl, frontendUrl, product, sub.email);
+                        await sendSubscriptionMail({
+                            to: sub.email,
+                            subject: `New Arrival: ${product.name} is now available! ✨`,
+                            text: `Fresh arrival on GreenCart: Check out ${product.name} at only $${product.offerPrice}!`,
+                            html: emailHtml
+                        });
+                    } catch (mailErr) {
+                        console.error(`Failed to send product notification to ${sub.email}:`, mailErr.message);
+                    }
+                }
+            }
+        } catch (subErr) {
+            console.error("Error in product newsletter dispatch:", subErr.message);
+        }
 
         res.json({ success: true, message: "Product Added" })
     } catch (error) {
