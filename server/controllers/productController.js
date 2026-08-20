@@ -61,7 +61,7 @@ export const addProduct = async (req, res) => {
 // Get Product : /api/product/list
 export const productList = async (req, res) => {
     try {
-        const products = await Product.find({});
+        const products = await Product.find({ isDeleted: { $ne: true } });
         res.json({ success: true, products })
     } catch (error) {
         console.log(error.message)
@@ -73,7 +73,10 @@ export const productList = async (req, res) => {
 export const productById = async (req, res) => {
     try {
         const { id } = req.body
-        const product = Product.findById(id)
+        const product = await Product.findOne({ _id: id, isDeleted: { $ne: true } })
+        if (!product) {
+            return res.status(404).json({ success: false, message: "Product not found or has been deleted" })
+        }
         res.json({ success: true, product })
     } catch (error) {
         console.log(error.message)
@@ -94,4 +97,24 @@ export const changeStock = async (req, res) => {
         res.json({ success: false, message: error.message })
     }
 
+}
+
+// Delete Product : /api/product/delete
+export const deleteProduct = async (req, res) => {
+    try {
+        const { id } = req.body;
+        if (!id) {
+            return res.status(400).json({ success: false, message: "Product ID is required" });
+        }
+        const product = await Product.findByIdAndUpdate(id, { isDeleted: true }, { new: true });
+        
+        if (!product) {
+            return res.status(404).json({ success: false, message: "Product not found" });
+        }
+
+        res.json({ success: true, message: "Product Deleted" });
+    } catch (error) {
+        console.log(error.message)
+        res.json({ success: false, message: error.message })
+    }
 }
