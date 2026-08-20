@@ -33,6 +33,8 @@ export const addProduct = async (req, res) => {
 
                 for (const sub of subscribers) {
                     try {
+                        console.log("Sending mail to", sub.email, "with product details", product);
+
                         const emailHtml = generateNewProductEmailHTML(backendUrl, frontendUrl, product, sub.email);
                         await sendSubscriptionMail({
                             to: sub.email,
@@ -107,7 +109,7 @@ export const deleteProduct = async (req, res) => {
             return res.status(400).json({ success: false, message: "Product ID is required" });
         }
         const product = await Product.findByIdAndUpdate(id, { isDeleted: true }, { new: true });
-        
+
         if (!product) {
             return res.status(404).json({ success: false, message: "Product not found" });
         }
