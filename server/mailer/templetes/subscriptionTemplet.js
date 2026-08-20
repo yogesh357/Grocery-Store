@@ -1,7 +1,7 @@
 export const generateNewProductEmailHTML = (backendUrl, frontendUrl, product, email) => {
     const unsubscribeUrl = `${backendUrl}/api/subscriber/unsubscribe?email=${encodeURIComponent(email)}`;
     const productUrl = `${frontendUrl}/products/${product.category}/${product._id}`;
-    
+
     // Select the first image from product.image array or fallback
     const productImg = (product.image && product.image.length > 0) ? product.image[0] : 'https://images.unsplash.com/photo-1542838132-92c53300491e?w=500';
     const descText = Array.isArray(product.description) ? product.description.join(', ') : product.description;
@@ -19,7 +19,7 @@ export const generateNewProductEmailHTML = (backendUrl, frontendUrl, product, em
         <div style="padding: 32px 24px; color: #334155; line-height: 1.6;">
             <!-- Product Image Section -->
             <div style="text-align: center; margin-bottom: 28px;">
-                <img src="${productImg}" alt="${product.name}" style="max-width: 100%; max-height: 300px; border-radius: 12px; object-fit: cover; box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05); border: 4px solid #f8fafc;" />
+                <img src="${productImg}" alt="${product.name}" width="300" style="display: block; width: 300px; max-width: 100%; height: auto; max-height: 300px; border-radius: 12px; object-fit: cover; box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05); border: 4px solid #f8fafc; margin: 0 auto;" />
             </div>
             
             <!-- Product Title and Category -->
