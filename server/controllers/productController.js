@@ -1,7 +1,8 @@
 
 import { v2 as cloudinary } from 'cloudinary';
 import Product from "../models/product.js";
-import { sendSubscriptionMail, generateNewProductEmailHTML } from '../mailer/subscriptionMail.js';
+import { sendSubscriptionMail } from '../mailer/subscriptionMail.js';
+import { generateNewProductEmailHTML } from '../mailer/templetes/subscriptionTemplet.js';
 import Subscriber from '../models/Subscribers.js';
 
 
@@ -29,7 +30,7 @@ export const addProduct = async (req, res) => {
             if (subscribers.length > 0) {
                 const backendUrl = req.protocol + '://' + req.get('host');
                 const frontendUrl = process.env.FRONTEND_URL || 'http://localhost:5173';
-                
+
                 for (const sub of subscribers) {
                     try {
                         const emailHtml = generateNewProductEmailHTML(backendUrl, frontendUrl, product, sub.email);
