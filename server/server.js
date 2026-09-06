@@ -18,12 +18,14 @@ import addressRouter from './routes/addressRoute.js';
 import orderRouter from './routes/orderRoute.js';
 import { stripeWebhooks } from './controllers/orderController.js';
 import subscriberRouter from './routes/subscriberRoute.js';
+import client from './configs/redis.js';
 
 const app = express();
 const port = process.env.PORT || 4000;
 
 await connectDb();
 await connectCloudinary();
+await client.connect(); // Connect to Redis server
 
 
 //These are URL's that are allowed to access our backend.
