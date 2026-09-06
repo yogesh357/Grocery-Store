@@ -1,11 +1,13 @@
 import Address from "../models/address.js";
+import { setCache } from "../utils/cache.js";
 
 
 // Add address : /api/address/add
 export const addAddress = async (req, res) => {
     try {
-        const { address } = req.body; //========== also add adress, userId
-        const { id: userId } = req.user;  //======================== we change req.body to req.user 
+        const { address } = req.body;
+        const { id: userId } = req.user;
+
         await Address.create({ ...address, userId })
         res.json({ success: true, message: "Address added successfully" })
 
@@ -20,11 +22,28 @@ export const addAddress = async (req, res) => {
 
 export const getAddress = async (req, res) => {
     try {
-        // const { userId } = req.body;
-        // const { userId } = req.user;
-        const { id: userId } = req.user; // we are changi => userId = req.body to userId = req.user
-        const addresses = await Address.find({ userId });
-        res.json({ success: true, addresses })
+
+        const { id: userId } = req.user;
+
+        const cacheKey = `address:${userId}`;
+
+        const cachedAddresses = await getCache(cacheKey);
+
+        if (cachedAddresses) {
+            return res.json({
+                success: true,
+                addresses: cachedAddresses
+            })
+        }
+
+        const addresses = await Address.find({ userId }).lean();
+
+        setCache(cacheKey, addresses, 300);
+
+        return res.json({
+            success: true,
+            addresses
+        })
 
     } catch (error) {
         console.log(error.message)

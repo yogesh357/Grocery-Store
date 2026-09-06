@@ -63,11 +63,38 @@ export const addProduct = async (req, res) => {
 // Get Product : /api/product/list
 export const productList = async (req, res) => {
     try {
-        const products = await Product.find({ isDeleted: { $ne: true } });
-        res.json({ success: true, products })
+        const cacheKey = 'products:list';
+
+        // Check Redis before querying MongoDB.
+        const cachedProducts = await getCache(cacheKey);
+
+        if (cachedProducts) {
+            return res.json({
+                success: true,
+                products: cachedProducts,
+            });
+        }
+
+        // Cache miss → fetch from MongoDB.
+        const products = await Product.find({
+            isDeleted: { $ne: true }
+        }).lean();
+
+        // Store the result in Redis for 5 minutes.
+        await setCache(cacheKey, products, 300);
+
+        res.json({
+            success: true,
+            products,
+        });
+
     } catch (error) {
-        console.log(error.message)
-        res.json({ success: false, message: error.message })
+        console.error(error.message);
+
+        res.status(500).json({
+            success: false,
+            message: error.message
+        });
     }
 }
 
@@ -75,11 +102,44 @@ export const productList = async (req, res) => {
 export const productById = async (req, res) => {
     try {
         const { id } = req.body
-        const product = await Product.findOne({ _id: id, isDeleted: { $ne: true } })
-        if (!product) {
-            return res.status(404).json({ success: false, message: "Product not found or has been deleted" })
+
+        if (!id) {
+            return res.status(400).json({
+                success: false,
+                message: 'Product ID is required'
+            });
         }
-        res.json({ success: true, product })
+
+        const cacheKey = `product:${id}`;
+
+        const cachedProduct = await getCache(chacheKey);
+
+        if (cachedProduct) {
+            return res.json({
+                success: true,
+                product: cachedProduct
+            });
+        }
+
+        const product = await Product.findOne({
+            _id: id,
+            isDeleted: { $ne: true }
+        })
+
+        if (!product) {
+            return res.status(404).json({
+                success: false,
+                message: 'Product not found or has been deleted'
+            });
+        }
+
+        await setCache(cacheKey, product, 300);
+
+        res.json({
+            success: true,
+            product
+        })
+
     } catch (error) {
         console.log(error.message)
         res.json({ success: false, message: error.message })
@@ -91,9 +151,39 @@ export const productById = async (req, res) => {
 export const changeStock = async (req, res) => {
     try {
         const { id, inStock } = req.body;
-        await Product.findByIdAndUpdate(id, { inStock })
+
+        if (!id) {
+            return res.status(400).json({
+                success: false,
+                message: 'Product ID is required'
+            });
+        }
+
+
+        const product = await Product.findByIdAndUpdate(
+            id,
+            { inStock },
+            { new: true }
+        ).lean();
+
+        if (!product) {
+            return res.status(404).json({
+                success: false,
+                message: 'Product not found'
+            });
+        }
+
+
+        // Invalidate both individual and list caches.
+        await deleteCache(
+            `product:${id}`,
+            'products:list'
+        );
+
 
         res.json({ success: true, message: "Stock Updated" })
+
+
     } catch (error) {
         console.log(error.message)
         res.json({ success: false, message: error.message })
@@ -105,14 +195,31 @@ export const changeStock = async (req, res) => {
 export const deleteProduct = async (req, res) => {
     try {
         const { id } = req.body;
+
         if (!id) {
-            return res.status(400).json({ success: false, message: "Product ID is required" });
+            return res.status(400).json({
+                success: false,
+                message: 'Product ID is required'
+            });
         }
-        const product = await Product.findByIdAndUpdate(id, { isDeleted: true }, { new: true });
+
+
+        const product = await Product.findByIdAndUpdate(
+            id,
+            { isDeleted: true },
+            { new: true }
+        ).lean();
 
         if (!product) {
             return res.status(404).json({ success: false, message: "Product not found" });
         }
+
+        // Remove stale product data from Redis.
+        await deleteCache(
+            `product:${id}`,
+            'products:list'
+        );
+
 
         res.json({ success: true, message: "Product Deleted" });
     } catch (error) {
