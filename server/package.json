@@ -23,7 +23,9 @@
     "multer": "^1.4.5-lts.2",
     "nodemailer": "^9.0.5",
     "redis": "^6.2.1",
-    "stripe": "^18.0.0"
+    "stripe": "^18.0.0",
+    "winston": "^3.19.0",
+    "winston-daily-rotate-file": "^5.0.0"
   },
   "devDependencies": {
     "nodemon": "^3.1.9"

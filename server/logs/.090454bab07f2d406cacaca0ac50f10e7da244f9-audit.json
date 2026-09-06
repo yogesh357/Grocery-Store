@@ -1,0 +1,15 @@
+{
+    "keep": {
+        "days": true,
+        "amount": 14
+    },
+    "auditLog": "C:\\MERN-Project's\\Grocery-Store\\server\\logs\\.090454bab07f2d406cacaca0ac50f10e7da244f9-audit.json",
+    "files": [
+        {
+            "date": 1788678305048,
+            "name": "C:\\MERN-Project's\\Grocery-Store\\server\\logs\\app-2026-09-06.log",
+            "hash": "db20fa61c7a7b6a77b71181f5384994c27e1c6b3ddc6389ab9b8541763703d0d"
+        }
+    ],
+    "hashType": "sha256"
+}

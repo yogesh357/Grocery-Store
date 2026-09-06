@@ -18,14 +18,15 @@ import addressRouter from './routes/addressRoute.js';
 import orderRouter from './routes/orderRoute.js';
 import { stripeWebhooks } from './controllers/orderController.js';
 import subscriberRouter from './routes/subscriberRoute.js';
-import client from './configs/redis.js';
+import { connectRedis } from './configs/redis.js';
+import { logger } from './configs/logger.config.js';
 
 const app = express();
 const port = process.env.PORT || 4000;
 
 await connectDb();
 await connectCloudinary();
-await client.connect(); // Connect to Redis server
+await connectRedis()
 
 
 //These are URL's that are allowed to access our backend.
@@ -39,6 +40,11 @@ app.use(express.json()) //all requests comming this server will be parsed
 app.use(cookieParser())
 app.use(cors({ origin: allowedOrigins, credentials: true }))
 
+// HTTP request logging
+app.use((req, _res, next) => {
+    logger.info(`${req.method} ${req.url}`);
+    next();
+});
 
 app.get('/', (req, res) => {
     res.send("Api is working")
@@ -53,6 +59,29 @@ app.use('/api/order', orderRouter)
 app.use('/api/subscriber', subscriberRouter)
 
 
+
+// Global error handler
+app.use((err, req, res, _next) => {
+
+    const statusCode = err.statusCode ?? HTTPSTATUS.INTERNAL_SERVER_ERROR;
+    const errorCode = err.errorCode ?? "INTERNAL_SERVER_ERROR";
+
+    logger.error({
+        message: err.message,
+        errorCode,
+        statusCode,
+        path: req.url,
+        method: req.method,
+        stack: err.stack,
+    });
+
+    res.status(statusCode).json({
+        message: err.message ?? "Internal Server Error",
+        errorCode,
+    });
+});
+
+
 app.listen(port, () => {
-    console.log(`Server is running on http://localhost:${port}`)
+    logger.info(`Server is running on http://localhost:${port}`);
 })
